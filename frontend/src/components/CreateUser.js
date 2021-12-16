@@ -20,7 +20,8 @@ export default function CreateUser() {
 
     // destructre form elmenet in const variable
     const { email, name, number, dob, password } = form;
-
+    const [startDate, setStartDate] = useState(new Date());
+    const [redirect, setRedirect] = useState(false);
     const config = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -32,12 +33,11 @@ export default function CreateUser() {
     })
     let navigate = useNavigate();
     // creating state to store the field errors
-    // const [errorbool, SetErrorBool] = useState(null)
+    const [errorbool, SetErrorBool] = useState(null)
     const [emailerr, setEmailErr] = useState('')
     const [numbererr, setNumberErr] = useState('')
     const [doberr, setDobErr] = useState('')
     const [passworderr, setPasswordErr] = useState('')
-    // const [flag,setFlag] = useState(false)
 
     const onSubmit = e => {
         e.target.reset()
@@ -48,22 +48,25 @@ export default function CreateUser() {
                 navigate('/')
             })
             .catch(function (error) {
-                // we will store field errors and when submitted it will print field errors
+                // we will store field errors and when submitted it will printed
                 if (error.response) {
                     // it will log field error from django
-                    console.log(error.response.data)
                     window.alert("Refresh and login again")
                     // custom user with this email already exists. = error.response.data.email[0]
+                     // data.email is array (see the error.response.data)
                     setEmailErr(error.response.data.email[0]);
                     console.log(emailerr)
 
-                    setNumberErr(error.response.data.number[0])
+                    // as data.number is object
+                    setNumberErr(error.response.data.number.phoneerror)
                     console.log(numbererr)
 
                     setDobErr(error.response.data.dob[0])
                     console.log(doberr)
 
                     setPasswordErr(error.response.data.password[0])
+
+                    SetErrorBool(error.response.data.status)
                 }
 
             })
@@ -120,7 +123,7 @@ export default function CreateUser() {
                     <input
                         className="form-control"
                         type="dob"
-                        placeholder="DOB : YYYY-MM-DD"
+                        placeholder="dob"
                         name='dob'
                         value={dob}
                         onChange={e => onChange(e)}
